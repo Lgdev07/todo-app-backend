@@ -4,15 +4,18 @@ const UserSchema = new mongoose.Schema({
     login: String,
     password: String,
     email: String,
-    photo: String
+    photo: String,
+    photo_url: String,
 }, {
     toJSON: {
         virtuals: true
     }
 })
 
-UserSchema.virtual('photo_url').get(function(){
-    return `http://localhost:3335/files/${this.photo}`
+UserSchema.pre('save', function(){
+    if (!this.photo_url){
+        this.photo_url = `${process.env.APP_URL}/files/${this.photo}`
+    }
 })
 
 module.exports = mongoose.model('User', UserSchema)

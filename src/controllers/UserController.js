@@ -1,9 +1,14 @@
 const User = require('../models/User')
+const aws = require('aws-sdk')
+const s3 = new aws.S3()
+const fs = require('fs')
+const path = require('path')
+const { promisify } = require('util')
 
 module.exports = {
     async store(req, res) {
         const { login, password, email } = req.body
-        const { filename } = req.file
+        const { key, location: url="" } = req.file
 
         const user_exists = await User.findOne({
             login
@@ -18,7 +23,8 @@ module.exports = {
                 login,
                 password, 
                 email,
-                photo: filename
+                photo: key,
+                photo_url: url
             })
     
             return res.json(user)
@@ -29,6 +35,19 @@ module.exports = {
     },
 
     async destroy(req, res) {
+        const user = await User.findById(req.params.id)
+        
+        if (process.env.STORAGE_TYPE === 's3'){
+            await s3.deleteObject({
+                Bucket: 'todo-upload',
+                Key: user.photo
+            }, () => {})
+        } else {
+            promisify(fs.unlink)(
+                path.resolve(__dirname, '..', '..', 'uploads', user.photo)
+            )
+        }
+        
         await User.findByIdAndDelete(req.params.id)
 
         res.send()
