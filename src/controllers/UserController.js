@@ -4,11 +4,13 @@ const s3 = new aws.S3()
 const fs = require('fs')
 const path = require('path')
 const { promisify } = require('util')
+const bcrypt = require('bcryptjs')
 
 module.exports = {
     async store(req, res) {
         const { login, password, email } = req.body
         const { key, location: url="" } = req.file
+        const hashedPassword = await bcrypt.hash(password, 10)
 
         const user_exists = await User.findOne({
             login
@@ -21,7 +23,7 @@ module.exports = {
         try{
             const user = await User.create({
                 login,
-                password, 
+                password: hashedPassword, 
                 email,
                 photo: key,
                 photo_url: url
