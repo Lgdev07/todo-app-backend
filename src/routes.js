@@ -1,6 +1,7 @@
 const UserController = require('./controllers/UserController')
 const TaskController = require('./controllers/TaskController')
 const AuthController = require('./controllers/AuthController')
+const TaskDoneController = require('./controllers/TaskDoneController')
 const express = require('express')
 const multer = require('multer')
 const uploadConfig = require('./config/upload')
@@ -20,5 +21,8 @@ routes.delete('/tasks/:id', TaskController.destroy)
 routes.get('/tasks/:id', TaskController.show)
 
 routes.post('/users/login', AuthController.show)
+
+// routes.post('/tasks/:id/markasdone', TaskDoneController.store)
+routes.put('/tasks/:id', TaskController.update)
 
 module.exports = routes

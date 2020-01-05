@@ -40,5 +40,11 @@ module.exports = {
         const task = await Task.findById(req.params.id)
 
         return res.json(task)
+    },
+
+    async update(req, res){
+        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        
+        res.json(task)
     }
 }

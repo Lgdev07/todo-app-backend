@@ -5,7 +5,7 @@ const TaskSchema = new mongoose.Schema({
     description: String,
     active: {
         type: Boolean,
-        default: false
+        default: true
     },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
