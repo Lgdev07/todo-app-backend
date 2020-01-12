@@ -21,6 +21,7 @@ module.exports = {
         })
 
         try{
+
             const user = await User.create({
                 login,
                 password: hashedPassword, 
@@ -28,7 +29,11 @@ module.exports = {
                 photo: key,
                 photo_url: url
             })
-    
+
+            if (!url){
+                user.photo_url = `${process.env.APP_URL}/files/${key}`
+            }
+
             return res.json(user)
         } catch {
             return res.status(500).send()
