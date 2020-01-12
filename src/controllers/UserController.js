@@ -27,12 +27,8 @@ module.exports = {
                 password: hashedPassword, 
                 email,
                 photo: key,
-                photo_url: url
+                photo_url: url || `${process.env.APP_URL}/files/${key}`
             })
-
-            if (!url){
-                user.photo_url = `${process.env.APP_URL}/files/${key}`
-            }
 
             return res.json(user)
         } catch {
